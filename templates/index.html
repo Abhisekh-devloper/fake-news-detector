@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Fake News Detector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+
+<body>
+
+<button class="toggle" onclick="toggleDark()">🌙 Dark</button>
+
+<div class="container">
+    <h1>🧠 AI Fake News Detector</h1>
+    <p class="subtitle">Paste news or search live news</p>
+
+    <!-- Live Search -->
+    <form method="post" action="/search">
+        <input type="text" name="topic" placeholder="Search live news..." class="search-box" required>
+        <button class="btn">Fetch News</button>
+    </form>
+
+    <hr style="margin:25px 0">
+
+    <!-- Manual Check -->
+    <form method="post">
+        <textarea name="news" placeholder="Paste the news article here..." required></textarea>
+        <button class="btn">🔍 Analyze News</button>
+    </form>
+
+    {% if result %}
+        <div class="result {% if 'Real' in result %}real{% else %}fake{% endif %}">
+            {{ result }}
+        </div>
+
+        <div class="confidence-box">
+            <p>Confidence: <strong>{{ confidence }}%</strong></p>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ confidence }}%"></div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if articles %}
+        <div style="margin-top:30px; text-align:left;">
+            <h3>📰 Live News Analysis</h3>
+
+            {% for art in articles %}
+                <div class="news-card">
+                    <a href="{{ art.link }}" target="_blank"><strong>{{ art.title }}</strong></a>
+                    <p>{{ art.label }} — {{ art.confidence }}%</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+</body>
+</html>
